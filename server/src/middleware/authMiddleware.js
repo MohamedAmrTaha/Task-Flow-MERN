@@ -12,13 +12,10 @@ export async function protect(req, res, next) {
 
   const token = header.split(" ")[1];
 
-  let user;
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    user = await User.findById(decoded.id);
-  } catch (error) {
-    return res.status(401).json({ success: false, message: "Not authorized" });
-  }
+  // jwt.verify throws on a bad/expired token; Express 5 forwards that to
+  // errorHandler, which answers 401.
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await User.findById(decoded.id);
 
   if (!user) {
     return res.status(401).json({ success: false, message: "User not found" });
