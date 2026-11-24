@@ -6,11 +6,13 @@ import {
   updateProject,
   deleteProject,
 } from "../controllers/projectController.js";
+import { getTasks, createTask } from "../controllers/taskController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 router.use(protect);
 router.route("/").get(getProjects).post(createProject);
 router.route("/:id").get(getProject).patch(updateProject).delete(deleteProject);
+router.route("/:projectId/tasks").get(getTasks).post(createTask);
 
 export default router;
